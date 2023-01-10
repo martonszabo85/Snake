@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta name= "viewport" content = "width=device-width, initial-scale = 1.0"/>
+		<style>
+			canvas {
+				border: 10px solid #d3d3d3;
+				background-color: #f1f1f1;
+			}
+		</style>
+		<br>
+		<button id= " text" onclick = startGame()> Restart </button>
+		<P id = "p"> Game over </P>
+	</head>
+	<body onload = "startGame()">
+
+		<script>
+			var interval;
+
+			var canvas
+			var ctx;
+			var cWidth = 480;
+			var cHeight = 270;
+
+			var clearColor = '#f1f1f1';
+
+			// in millisec
+			var delay = 200;
+
+			var apples = [];
+
+			var appleHeight =10;
+			var appleWidth =10;
+			var appleColor ='yellow';
+			var i
+
+			var deleteApple = null;
+
+
+			var points = 0;
+
+			// this needs to be random later
+			var snake = {
+				x: 10,
+				y: 10,
+				color: "green",
+				width: 10,
+				height: 10,
+				direction: ("ArrowRight"), 
+				draw: function () {
+					ctx.fillStyle = this.color;
+					ctx.fillRect(this.x, this.y, this.width, this.height);
+				},
+				clear: function(){
+					ctx.fillStyle = clearColor;
+					ctx.fillRect(this.x, this.y, this.width, this.height);
+				},
+				moveRight: function() {
+					this.x += this.width;
+				},
+				moveDown: function () {
+					this.y += this.height;
+				},
+				moveLeft: function () {
+					this.x -= this.width;
+				},
+				moveUp: function () {
+					this.y -= this.height;
+				}
+			}
+
+	
+
+			window.addEventListener('keydown', function (e) {
+						snake.direction = e.key
+					}
+			);
+
+			canvas = document.createElement(id = "canvas");
+			canvas.id = "canvas"
+			canvas.width = cWidth;
+			canvas.height = cHeight;
+			ctx = canvas.getContext("2d");
+		
+			document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+
+			function getRand (min, max) {
+				return Math.floor(Math.random() * (max - min)) + min;
+			}
+
+			function createApples () {
+				for(i = 0; i < 10; i++) {
+					var posX = getRand(5, 40) * 10;
+					var posY = getRand(5, 40) * 10;
+					var apple = {
+						posX: posX, 
+						posY: posY
+					};
+					ctx.fillStyle = appleColor;
+					ctx.fillRect(posX, posY, appleWidth, appleHeight);
+					apples.push(apple);
+					
+				}
+				//interval1 = setInterval(createApples, 2000);
+				return apples;
+				
+			}
+
+			function applesClear() {
+				apples.length = "0"
+			}
+
+			function startGame() {
+				snake.x = getRand(10, 30) * 10;
+				snake.y = getRand(5, 20) * 10;
+				snake.directon = getRand(0,3);
+				snake.draw();
+
+				clearInterval(interval)
+				interval = setInterval(gameLoop, delay);
+				
+				if (apples.length < 10) {
+					apples = createApples();
+				} else {
+					delete apples;
+				}					
+				
+				
+
+			}
+
+			function gameLoop() {
+				snake.clear();
+				if(snake.direction == 'ArrowRight') snake.moveRight();
+				if(snake.direction == 'ArrowDown')snake.moveDown();
+				if(snake.direction == "ArrowLeft") snake.moveLeft();
+				if (snake.direction == "ArrowUp") snake.moveUp();
+				snake.draw();
+
+				for(var i = 0; i < apples.length; i++) {
+					var apple = apples[i];
+					if(snake.x == apple.posX && snake.y == apple.posY) {
+						// take the apple from the array
+						//addPoint(10);
+						apples.length -1;
+						break;
+					}
+					console.log(apple.posX,apple.posY)
+				}
+
+				if(gameEnded()) {
+					clearInterval(interval);
+					explode();
+					applesClear();
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					gameOver();
+									
+			} 
+
+			function addPoins(p) {
+				points + p;
+			}
+
+			function explode() {
+				snake.clear();
+
+			}
+
+			function gameEnded () {
+				//if(apples.length < 1) return true;
+				if(snake.direction == 'ArrowRight' && snake.x >= cWidth - snake.width) return true;
+				if(snake.direction == "ArrowDown" && snake.y >= cHeight - snake.height) return true;
+				if(snake.direction == " ArrowLeft" && snake.x <= 1) return true;
+				if(snake.direction == "ArrowUp" && snake.y <= 1) return true;
+
+
+				return false;
+			}
+
+			function gameOver() {
+				document.getElementById("canvas");
+				ctx.font = "30px Arial";
+				ctx.fillColor = "black";
+				ctx.fillText("GAME OVER", 150, 140);
+				
+			}
+
+		}	
+		</script>
+	</body>
+</html>
